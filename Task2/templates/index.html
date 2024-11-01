@@ -5,29 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stripe Mini App</title>
     <script src="https://js.stripe.com/v3/"></script>
-    <style>
-        /* Basic styling for the buttons */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        button {
-            margin: 5px;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #payment-result {
-            margin-top: 20px;
-            color: red;
-        }
-        #card-element {
-            margin: 20px 0;
-        }
-    </style>
+    
 </head>
 <body>
-    <h1>Select Deposit Amount</h1>
+    <h1>Make your deposit</h1>
+    <p> Please select your desired deposit amount and proceed with the payment.</p>
     <form id="payment-form">
         <div>
             <button type="button" class="amount-button" value="2000">20€</button>
@@ -38,6 +20,9 @@
         <div id="card-element"></div>
         <button id="submit-button">Pay</button>
     </form>
+
+    <p>Feeling lucky? Deposit now to start your winning streak!</p>
+
     <div id="payment-result"></div>
     
     <script>
@@ -102,5 +87,144 @@
         });
    
     </script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4f4fee, #23a6d5);
+            color: #000000;
+            display: flex;
+            justify-content: center;
+            flex-direction: column; /* column layout to stack items */
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #060606;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            margin-left: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #fff; /* White color for contrast */
+            margin: 10px 0; /* Space between paragraphs */
+            max-width: 600px; /* Max width for better readability */
+        }
+
+
+        /* Form Styling */
+        form {
+            background: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            text-align: center;
+            animation: slideIn 0.8s ease;
+            margin-bottom: 40px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Amount Buttons */
+        .amount-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .amount-button:hover, 
+        .amount-button.selected {
+            background-color: #0056b3;
+            transform: scale(1.05); /* Slightly larger on hover */
+        }
+
+        /* Payment Button */
+        #submit-button {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #submit-button:hover {
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+            transform: translateY(-2px);
+        }
+
+        /* Card Element Styling */
+        #card-element {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* Payment Result Styling */
+        #payment-result {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #28a745;
+            text-align: center;
+        }
+
+        #error {
+            color: red;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            form {
+                padding: 15px 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            #submit-button {
+                font-size: 16px;
+                padding: 10px 15px;
+            }
+
+            .amount-button {
+                font-size: 14px;
+            }
+        }
+
+    </style>
 </body>
 </html>
