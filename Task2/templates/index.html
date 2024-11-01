@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Mini App</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        /* Basic styling for the buttons */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #payment-result {
+            margin-top: 20px;
+            color: red;
+        }
+        #card-element {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select Deposit Amount</h1>
+    <form id="payment-form">
+        <div>
+            <button type="button" class="amount-button" value="2000">20€</button>
+            <button type="button" class="amount-button" value="4000">40€</button>
+            <button type="button" class="amount-button" value="10000">100€</button>
+        </div>
+        <input type="hidden" id="amount" name="amount" value="">
+        <div id="card-element"></div>
+        <button id="submit-button">Pay</button>
+    </form>
+    <div id="payment-result"></div>
+    
+    <script>
+        
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_51QFyQqP5YDh8SlQPrC0Es3zPkUABUkVLCisITVjsOjx5tRYFHYVhzRLjthKkpu1TCQdaHMnKj8pczEg63h1x8TAg00ODZbwhu4'); // Replace with your actual publishable key
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        // Handle amount button clicks
+        const amountButtons = document.querySelectorAll('.amount-button');
+        amountButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                document.getElementById('amount').value = button.value;
+                // Highlight the selected button (optional)
+                amountButtons.forEach(btn => btn.style.backgroundColor = '');
+                button.style.backgroundColor = '#f0f0f0';
+            });
+        });
+
+        // Handle form submission
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const { paymentMethod, error } = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
+            });
+
+            if (error) {
+                document.getElementById('payment-result').innerText = error.message;
+            } else {
+                // Call your backend to create a PaymentIntent
+                const response = await fetch('/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        amount: document.getElementById('amount').value,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    const confirmResult = await stripe.confirmCardPayment(result.clientSecret, {
+                        payment_method: paymentMethod.id,
+                    });
+
+                    if (confirmResult.error) {
+                        document.getElementById('payment-result').innerText = confirmResult.error.message;
+                    } else {
+                        document.getElementById('payment-result').innerText = 'Payment succeeded!';
+                    }
+                } else {
+                    document.getElementById('payment-result').innerText = result.error;
+                }
+            }
+        });
+   
+    </script>
+</body>
+</html>
